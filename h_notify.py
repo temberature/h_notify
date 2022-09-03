@@ -360,6 +360,6 @@ def notify_rss_group_activity(group=None, groupname=None, token=None, pickle=Non
 def notify_rss_user_activity(user=None, username=None, token=None, pickle=None, notified_ids=None):
     print ('updating rss for user %s' % username  )
     notifier = RssNotifier(type='set', token=token, pickle=pickle, notified_ids=notified_ids)
-    notifier.notify_facet(facet='user', value=user, username=username)
+    notifier.notify_facet(facet='user', value=user)
     notifier.emit_user_rss(user=user, username=username)
     return notified_ids
