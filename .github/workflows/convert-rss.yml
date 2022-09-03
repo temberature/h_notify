@@ -1,0 +1,40 @@
+name: 'Convert RSS Actions'
+
+on:
+  schedule:
+    - cron: '0,15,30,45 * * * *'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout from repo
+      uses: actions/checkout@master
+      with:
+        ref: main
+
+    - name: Install Python latest
+      uses: actions/setup-python@main
+      with:
+        python-version: '3.x'
+        architecture: 'x64'
+
+    - name: Install dependencies
+      run: |
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Doing fetch
+      run: python examples.py
+
+    - name: Commit files
+      run: |
+        git config --local user.email "temberature@gmail.com"
+        git config --local user.name "Tong"
+        git add .
+        git commit -m "提交RSS XML更新 $(date "+%Y-%m-%d %H:%M:%S")"
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.CONVERT_TOKEN }}
+        branch: master
