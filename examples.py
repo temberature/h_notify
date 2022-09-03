@@ -30,11 +30,12 @@ try:
 
     # rss recipes 
 
-    notify_rss_group_activity(group='jdLyRnR4', groupname='Anyone Can Join', token=default_token, pickle='jdLyRnR4')
+    notify_rss_group_activity(group='jdLyRnR4', groupname='third-brain', token=default_token, pickle='jdLyRnR4')
 
+    notify_rss_user_activity(user='acct:temberature@hypothes.is', username='temberature', token=default_token, pickle='acct:temberature@hypothes.is')
     # email recipes
 
-    notify_email_tag_activity(tag='futuoer', token=default_token, pickle='futuoer', smtp=default_smtp_server, sender=default_email_sender, sender_password=default_email_password, recipient='nobody@example.com')
+    # notify_email_tag_activity(tag='futuoer', token=default_token, pickle='futuoer', smtp=default_smtp_server, sender=default_email_sender, sender_password=default_email_password, recipient='nobody@example.com')
 
     # print ( 'sleeping' )
     # time.sleep(60 * 30)  # wait 30 min to be polite to the hypothesis api

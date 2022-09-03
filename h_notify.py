@@ -234,6 +234,63 @@ class RssNotifier(Notifier):
         rssfeed  = fg.rss_str(pretty=True) # Get the RSS feed as string
         fg.rss_file('%s.xml' % group) # Write the RSS feed to a file
       
+    def emit_user_rss(self, user=None, username=None):
+        md = markdown.Markdown()
+        fg = FeedGenerator()
+        fg.id('https://h.jonudell.info')
+        fg.title('Hypothesis user %s' % username)
+        fg.author( {'name':'Jon Udell','email':'judell@hypothes.is'} )
+        fg.description("Hypothesis notifications for user %s" % username)
+        fg.link( href='https://h.jonudell.info/user_rss' )
+        fg.language('en')
+        h = Hypothesis(token=self.token, limit=20)
+        ids = self.data()
+        annos = []
+        for id in ids:
+            try:
+                anno = h.get_annotation(id)
+                assert ('id' in anno.keys())
+                annos.append(anno)
+            except:
+                print ( 'cannot get %s, deleted?' % id)
+            annos.sort(key=itemgetter('updated'), reverse=True)
+        annos = [HypothesisAnnotation(a) for a in annos]
+        for anno in annos:
+            ref_user = None
+            in_reply_to = None
+            root_id = anno.id
+            if len(anno.references) > 0:
+                try:
+                    ref_id = anno.references[-1:][0]
+                    root_id = anno.references[0]
+                    ref = h.get_annotation(ref_id)
+                    ref_user = HypothesisAnnotation(ref).user
+                    in_reply_to = '<p>in reply to %s </p>' % ref_user
+                except:
+                    print ("cannot get user for ref_id %s, deleted?" % ref_id)
+            fe = fg.add_entry()
+            fe.id(anno.id)
+            fe.title('%s annotated %s in the user %s at %s ' % (anno.user, anno.doc_title, username, anno.updated))
+            fe.author({"email":None,"name":anno.user,"uri":None})
+            dl = "https://hyp.is/%s" % anno.id
+            fe.link ({"href":"%s" % dl})
+            content = ''
+            if ref_user is not None:
+                content += in_reply_to
+            if anno.exact is not None:
+                content += '<p>in reference to: </p> <p> <blockquote><em>%s</em></blockquote></p>' % anno.exact
+            content += '<p> %s <a href="https://hyp.is/%s">said</a>: </p> ' % (anno.user, root_id)
+            content += '%s ' % md.convert(anno.text)
+            if len(anno.tags):
+                content += '<p>tags: %s' % ', '.join(anno.tags)
+            fe.content(content, type='CDATA')
+            dt = dateutil.parser.parse(anno.updated)
+            dt_tz = dt.replace(tzinfo=pytz.UTC)
+            fe.pubdate(dt_tz)
+
+        rssfeed  = fg.rss_str(pretty=True) # Get the RSS feed as string
+        fg.rss_file('%s.xml' % user) # Write the RSS feed to a file
+      
 # Email recipes
 
 def notify_email_user_activity(user=None, token=None, pickle=None, smtp=None, sender=None, sender_password=None, recipient=None, notified_ids=None):
@@ -297,4 +354,12 @@ def notify_rss_group_activity(group=None, groupname=None, token=None, pickle=Non
     notifier = RssNotifier(type='set', token=token, pickle=pickle, notified_ids=notified_ids)
     notifier.notify_facet(facet='group', value=group, groupname=groupname)
     notifier.emit_group_rss(group=group, groupname=groupname)
+    return notified_ids
+
+""" Watch for annotations by a user """
+def notify_rss_user_activity(user=None, username=None, token=None, pickle=None, notified_ids=None):
+    print ('updating rss for user %s' % username  )
+    notifier = RssNotifier(type='set', token=token, pickle=pickle, notified_ids=notified_ids)
+    notifier.notify_facet(facet='user', value=user, username=username)
+    notifier.emit_user_rss(user=user, username=username)
     return notified_ids
