@@ -4,6 +4,7 @@ from feedgen.feed import FeedGenerator
 from hypothesis import Hypothesis, HypothesisAnnotation
 from operator import itemgetter
 from email.mime.text import MIMEText
+import pytz
 class Notifier(object):
     def __init__(self, type=None, token=None, pickle=None, notified_ids=None):
         self.token = token
