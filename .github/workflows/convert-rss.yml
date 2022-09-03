@@ -2,7 +2,7 @@ name: 'Convert RSS Actions'
 
 on:
   schedule:
-    - cron: '0,15,30,45 * * * *'
+    - cron: '0,5,10,15 * * * *'
 
 jobs:
   build:
