@@ -3,6 +3,7 @@ name: 'Convert RSS Actions'
 on:
   schedule:
     - cron: '0,5,10,15 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
