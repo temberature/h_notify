@@ -2,7 +2,7 @@ from h_notify import *
 import time
 import traceback
 
-default_token = '687...3df5' # hypothesis api token for a user who is a member of all monitored groups
+default_token = '6879-5FJ3618KKG9E4VhXKOzQGw-GkyCJXxkSaG48xsPE7wY' # hypothesis api token for a user who is a member of all monitored groups
 default_hook = 'https://hooks.slack.com/services/T03...yzy' # see https://YOUR_VANITY_NAME.slack.com/apps/manage/custom-integrations)
 
 default_smtp_server = 'smtp.example.com' 
@@ -30,7 +30,7 @@ try:
 
     # rss recipes 
 
-    notify_rss_group_activity(group='8gk9i7VV', groupname='Anyone Can Join', token=default_token, pickle='8gk9i7VV')
+    notify_rss_group_activity(group='jdLyRnR4', groupname='Anyone Can Join', token=default_token, pickle='jdLyRnR4')
 
     # email recipes
 
